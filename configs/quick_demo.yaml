@@ -1,0 +1,14 @@
+# Small, fast settings for synthetic data (examples, smoke tests, CI).
+data:
+  dataset: data/synthetic/dataset.csv
+synthetic:
+  grid_shape: [4, 3]
+  n_packets: 20
+survey:
+  n_packets: 20
+model:
+  hidden_layer_sizes: [16, 8]
+  max_epochs: 200
+  patience: 3
+evaluation:
+  n_splits: 3

@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "如果你在研究中使用了本軟體，請依下列資訊引用。"
+title: "wifi-fingerprint-locator"
+abstract: "WiFi CSI fingerprint indoor localization: decodes Intel 5300 beamforming reports, builds amplitude, sanitized-phase and real-imaginary fingerprints, and compares neural-network position regression under packet, location and temporal splits."
+type: software
+authors:
+  - name: "RL"
+version: "0.1.0"
+date-released: 2026-10-17
+license: MIT
+repository-code: "https://github.com/recklight/wifi-fingerprint-locator"
+keywords:
+  - wifi
+  - channel-state-information
+  - indoor-localization
+  - fingerprinting
+  - intel-5300
+  - phase-sanitization
+  - neural-network

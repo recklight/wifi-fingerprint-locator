@@ -1,0 +1,8 @@
+# Levenberg-Marquardt training of a small network (10 hidden units). On the full
+# 8 x 7 synthetic survey it needs about 290 MB with the 90-value representations
+# and about 590 MB with the 180-value ones, hence the higher memory limit.
+model:
+  hidden_layer_sizes: [10]
+  solver: levenberg_marquardt
+  max_epochs: 200
+  lm_memory_limit_mb: 1024

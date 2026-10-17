@@ -1,0 +1,92 @@
+# Default configuration.  Every key is optional; omitted keys keep these values.
+# Override single values on the command line with  --set section.key=value
+seed: 0  # master seed of splits, model initialization and synthetic data
+data:
+  dataset: data/dataset.csv  # placeholder: point it at your own data
+  file_pattern: (?P<campaign>\D*)(?P<x>\d+)-(?P<y>\d+)\.dat  # file names the index command accepts; named groups x and y are grid indices
+  grid_spacing_m: 1.0  # distance between grid points, used by index to compute meters
+  grid_origin: 1  # grid index that index places at 0 m
+synthetic:
+  grid_shape:  # reference points along x and y
+  - 8
+  - 7
+  grid_spacing_m: 1.0  # distance between neighboring reference points
+  n_packets: 200  # packets per reference point and campaign
+  n_campaigns: 1  # repeated surveys of the same grid
+  n_rx: 3  # receive antennas, 1 to 3
+  room_margin_m: 1.5  # distance from the outermost reference points to the walls
+  access_point_m:  # transmitter position relative to the first reference point
+  - -1.0
+  - -1.0
+  n_scatterers: 6  # fixed point scatterers placed at random
+  wall_reflectivity: 0.5  # amplitude reflection coefficient of the walls
+  center_frequency_hz: 5320000000.0  # carrier frequency
+  antenna_spacing_m: 0.028  # spacing of the receive antennas
+  tx_power_dbm: 15.0  # transmit power
+  snr_db: 30.0  # signal-to-noise ratio of the measured channel
+  gain_jitter_db: 1.0  # standard deviation of the per-packet gain fluctuation
+  scatterer_jitter: 0.1  # relative per-packet fluctuation of the scatterer paths
+  max_timing_offset_ns: 50.0  # per-packet sampling-time offset, uniform in +/- this value
+  two_stream_fraction: 0.04  # share of packets reported with two transmit streams
+  zero_entry_rate: 0.001  # share of CSI entries reported as exactly zero
+  packet_interval_s: 1.0  # time between packets
+survey:
+  packet_start: 0  # first report of each capture used (0-based)
+  n_packets: 200  # reports per capture from packet_start on; null uses all
+  tx_index: 0  # transmit stream used
+  rx_indices: null  # receive antennas used; null uses all
+  apply_permutation: true  # reorder receive columns into physical antenna order
+  strict: false  # fail on the first malformed report instead of skipping it
+scaling:
+  to_snr_units: true  # rescale raw CSI with RSSI, AGC and noise to sqrt(SNR) units
+  noise_floor_fallback_dbm: -92.0  # noise floor assumed when a report gives none
+  three_stream_gain_db: 4.5  # power compensation of three-stream reports
+  compensate_stream_power: true  # apply the per-stream power compensation
+cleaning:
+  n_tx_policy: drop_minority  # keep | require_constant | drop_minority
+  zero_entry_policy: interpolate  # interpolate | drop | keep
+  drop_nonfinite: true  # drop packets with undefined values instead of failing
+features:
+  representation: amplitude  # amplitude | amplitude_db | sanitized_phase | amplitude_phase | real_imag | sanitized_real_imag
+  subcarrier_layout: grouped  # grouped | uniform
+  phase_fit: endpoint  # endpoint | lstsq
+  amplitude_floor_db: -20.0  # smallest amplitude kept by amplitude_db
+model:
+  name: mlp  # mlp | knn | weighted_knn | nearest_reference
+  hidden_layer_sizes:  # width of each hidden layer of the MLP
+  - 60
+  - 30
+  - 15
+  solver: lbfgs  # lbfgs | adam | levenberg_marquardt
+  alpha: 0.0001  # L2 penalty on the MLP weights
+  alpha_grid: []  # candidate penalties chosen by validation error (needs patience and validation_fraction above 0); empty uses alpha
+  max_epochs: 1000  # upper bound on training iterations
+  epochs_per_check: 10  # iterations between validation checks (lbfgs and adam)
+  patience: 6  # validation checks without improvement before stopping; 0 disables
+  validation_fraction: 0.15  # share held out for early stopping: packets, or whole reference points under location_block and location_holdout
+  learning_rate: 0.001  # initial step size of adam
+  min_gradient: 1.0e-07  # gradient tolerance of lbfgs and levenberg_marquardt
+  lm_initial_mu: 0.001  # initial damping of levenberg_marquardt
+  lm_mu_decrease: 0.1  # damping factor after a successful step
+  lm_mu_increase: 10.0  # damping factor after a failed step
+  lm_mu_max: 10000000000.0  # damping at which levenberg_marquardt gives up
+  lm_memory_limit_mb: 512.0  # memory ceiling of levenberg_marquardt
+  n_neighbors: 5  # neighbors of knn and weighted_knn
+evaluation:
+  n_splits: 5  # cross-validation folds
+  split_strategy: location_holdout  # packet_random | location_block | location_holdout | temporal
+  cdf_step_m: 0.2  # threshold spacing of the error CDF
+  compare_representations:  # representations evaluated by compare
+  - amplitude
+  - sanitized_phase
+  - amplitude_phase
+  - real_imag
+  compare_strategies:  # split strategies evaluated by compare
+  - packet_random
+  - location_block
+  - location_holdout
+  - temporal
+output:
+  root: outputs  # run folders are created here when --out is not given
+  figure_format: png  # png | pdf | svg
+  dpi: 150  # resolution of raster figures

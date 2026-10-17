@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+build/
+dist/
+*.egg-info/
+.eggs/
+.venv/
+venv/
+
+# Testing / linting caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Data and results: users point the tools at their own data, and data never
+# enters version control. The folders themselves are kept through .gitkeep.
+data/*
+!data/.gitkeep
+outputs/*
+!outputs/.gitkeep
+examples/output/
+*.mat
+*.dat
+*.bin
+*.npy
+*.npz
+*.joblib
+*.pt
+*.xlsx
+*.xls
+*.csi
+*.pcap
+
+# Editors / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

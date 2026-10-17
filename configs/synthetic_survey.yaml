@@ -1,0 +1,10 @@
+# Medium synthetic survey for the example scripts: the full 8 x 7 grid, 40 packets per point.
+data:
+  dataset: data/synthetic/dataset.csv
+synthetic:
+  n_packets: 40
+survey:
+  n_packets: 40
+model:
+  hidden_layer_sizes: [30, 15]
+  max_epochs: 300
